@@ -1,0 +1,388 @@
+/* Namibia Loan Insight - Custom Light Theme Styles */
+
+:root {
+    /* Light theme colors */
+    --bg-dark: #ffffff;
+    --bg-darker: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #6c757d;
+    
+    /* Namibian flag inspired colors */
+    --primary-blue: #0066cc;
+    --primary-blue-light: #3399ff;
+    --accent-red: #cc0000;
+    --accent-green: #009900;
+    --accent-yellow: #ffcc00;
+    
+    /* Status colors */
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+}
+
+/* Base styles */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+/* Override Bootstrap dark theme */
+.bg-dark {
+    background-color: var(--bg-darker) !important;
+}
+
+.card.bg-dark {
+    background-color: var(--bg-card) !important;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Navigation */
+.navbar-dark {
+    background-color: var(--bg-darker) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.navbar-dark .navbar-brand {
+    color: var(--primary-blue) !important;
+    font-weight: 700;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--primary-blue) !important;
+}
+
+/* Main content spacing */
+.main-content {
+    padding-top: 80px; /* Account for fixed navbar */
+    min-height: calc(100vh - 80px);
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-light);
+    border-color: var(--primary-blue-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary-blue-light);
+    border-color: var(--primary-blue-light);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-blue-light);
+    border-color: var(--primary-blue-light);
+    color: white;
+}
+
+/* Cards */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 102, 204, 0.2);
+}
+
+.border-primary {
+    border-color: var(--primary-blue) !important;
+}
+
+/* Forms */
+.form-control, .form-select {
+    background-color: var(--bg-card);
+    border-color: #ced4da;
+    color: var(--text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-card);
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+    color: var(--text-primary);
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-text {
+    color: var(--text-muted);
+}
+
+.input-group-text {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: var(--text-primary);
+}
+
+/* Financial metrics display */
+.financial-metric {
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 102, 204, 0.1) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.financial-metric h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.financial-metric h4 {
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+}
+
+/* Risk level display */
+.risk-level-display {
+    padding: 2rem;
+    background: radial-gradient(circle, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #d4edda;
+    border-left: 4px solid var(--success);
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #fff3cd;
+    border-left: 4px solid var(--warning);
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #f8d7da;
+    border-left: 4px solid var(--danger);
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.2);
+    color: #d1ecf1;
+    border-left: 4px solid var(--info);
+}
+
+/* Tables */
+.table-dark {
+    --bs-table-bg: var(--bg-card);
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.025);
+    color: var(--text-primary);
+}
+
+.table-dark th {
+    border-color: #dee2e6;
+    color: var(--primary-blue);
+}
+
+.table-dark td {
+    border-color: #dee2e6;
+    color: var(--text-primary);
+}
+
+/* Progress bars */
+.progress {
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Regulation cards */
+.regulation-card {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 102, 204, 0.05) 100%);
+    transition: all 0.3s ease;
+}
+
+.regulation-card:hover {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 102, 204, 0.1) 100%);
+    transform: translateY(-2px);
+}
+
+/* Social links */
+.social-links a {
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-blue-light) !important;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(135deg, var(--bg-darker) 0%, #e9ecef 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    color: var(--text-primary);
+}
+
+footer h5, footer h6 {
+    color: var(--primary-blue);
+}
+
+/* Accordion */
+.accordion-dark .accordion-item {
+    background-color: var(--bg-card);
+    border-color: #dee2e6;
+}
+
+.accordion-dark .accordion-button {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: #dee2e6;
+}
+
+.accordion-dark .accordion-button:not(.collapsed) {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.accordion-dark .accordion-button:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 102, 204, 0.25);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .hero-section .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .financial-metric {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        padding-top: 70px;
+    }
+    
+    .hero-section .display-4 {
+        font-size: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Loading states */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Focus states for accessibility */
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-blue-light);
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Print styles */
+@media print {
+    .navbar, .btn, footer {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        background: white !important;
+    }
+}

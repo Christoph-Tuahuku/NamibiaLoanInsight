@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+{% set page_title = "Fraud Protection Center" %}
+{% set active_page = "fraud" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-danger">
+                    <i class="fas fa-shield-alt me-3"></i>Fraud Protection Center
+                </h1>
+                <p class="lead">Stay safe from loan scams and financial fraud in Namibia</p>
+            </div>
+
+            <!-- Active Alerts -->
+            <div class="alert alert-danger mb-4" role="alert">
+                <h5 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Current Fraud Alert
+                </h5>
+                <p><strong>WhatsApp Loan Scams:</strong> Fraudsters are using WhatsApp to offer "instant guaranteed loans" with fake NamFISA logos. They request upfront payments for "processing fees" or "insurance."</p>
+                <hr>
+                <p class="mb-0">
+                    <strong>Action:</strong> Never pay upfront fees for loan applications. Report suspicious messages to +264 61 290 5000 (NamFISA hotline).
+                </p>
+            </div>
+
+            <!-- Quick Fraud Check -->
+            <div class="row mb-5">
+                <div class="col-lg-8">
+                    <div class="card bg-dark border-warning">
+                        <div class="card-header">
+                            <h5 class="text-warning mb-0">
+                                <i class="fas fa-search me-2"></i>Quick Fraud Check
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Received a loan offer? Check these red flags before proceeding:</p>
+                            <form id="fraudCheckForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="upfront_fees">
+                                            <label class="form-check-label" for="upfront_fees">
+                                                Requires upfront fees or payments
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="guaranteed_approval">
+                                            <label class="form-check-label" for="guaranteed_approval">
+                                                Guarantees approval regardless of credit
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="no_documentation">
+                                            <label class="form-check-label" for="no_documentation">
+                                                No paperwork or documentation required
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="pressure_tactics">
+                                            <label class="form-check-label" for="pressure_tactics">
+                                                High-pressure tactics or urgency
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="unrealistic_rates">
+                                            <label class="form-check-label" for="unrealistic_rates">
+                                                Interest rates too good to be true
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="no_license">
+                                            <label class="form-check-label" for="no_license">
+                                                Cannot provide NamFISA license number
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="social_media_only">
+                                            <label class="form-check-label" for="social_media_only">
+                                                Only contactable via social media
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input fraud-check" type="checkbox" id="grammar_errors">
+                                            <label class="form-check-label" for="grammar_errors">
+                                                Poor grammar or spelling in communications
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="fraudResult" class="mt-3" style="display: none;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-header">
+                            <h6 class="text-success mb-0">
+                                <i class="fas fa-check-circle me-2"></i>Verify Legitimacy
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <h6>Before accepting any loan offer:</h6>
+                            <ol class="small">
+                                <li>Check NamFISA license at <a href="https://www.namfisa.com.na" target="_blank" class="text-light">namfisa.com.na</a></li>
+                                <li>Visit physical business address</li>
+                                <li>Get everything in writing</li>
+                                <li>Read all terms and conditions</li>
+                                <li>Compare with other legitimate lenders</li>
+                            </ol>
+                            <div class="alert alert-success alert-sm mt-3">
+                                <strong>Legitimate lenders:</strong>
+                                <ul class="mb-0 small">
+                                    <li>Never charge upfront fees</li>
+                                    <li>Provide clear documentation</li>
+                                    <li>Have verifiable licenses</li>
+                                    <li>Allow time for decision</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Common Scam Types -->
+            <div class="row mb-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-danger h-100">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="fab fa-whatsapp text-success fa-3x"></i>
+                            </div>
+                            <h6 class="card-title text-danger">WhatsApp Loan Scams</h6>
+                            <p class="card-text small">
+                                Fake lenders use WhatsApp Business accounts with official-looking logos to offer instant loans requiring upfront payments.
+                            </p>
+                            <div class="alert alert-danger alert-sm">
+                                <strong>Red Flag:</strong> Any loan offer via WhatsApp requiring upfront payment
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-danger h-100">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-envelope text-info fa-3x"></i>
+                            </div>
+                            <h6 class="card-title text-danger">Email Phishing</h6>
+                            <p class="card-text small">
+                                Fake emails claiming to be from banks or lenders requesting personal information or login credentials.
+                            </p>
+                            <div class="alert alert-danger alert-sm">
+                                <strong>Red Flag:</strong> Urgent emails requesting personal banking details
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-danger h-100">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-phone text-warning fa-3x"></i>
+                            </div>
+                            <h6 class="card-title text-danger">Phone Scams</h6>
+                            <p class="card-text small">
+                                Cold calls claiming pre-approved loans with immediate cash available, requesting personal details or payments.
+                            </p>
+                            <div class="alert alert-danger alert-sm">
+                                <strong>Red Flag:</strong> Unsolicited calls about pre-approved loans
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protection Strategies -->
+            <div class="card bg-dark border-primary mb-5">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Protection Strategies
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Personal Information Security</h6>
+                            <ul>
+                                <li><strong>Never share:</strong> ID numbers, banking passwords, or PINs</li>
+                                <li><strong>Verify independently:</strong> Look up company details separately</li>
+                                <li><strong>Use official channels:</strong> Contact banks through their official numbers</li>
+                                <li><strong>Be skeptical:</strong> If it sounds too good to be true, it probably is</li>
+                            </ul>
+
+                            <h6 class="text-primary mt-4">Online Safety</h6>
+                            <ul>
+                                <li>Check website URLs carefully (look for https://)</li>
+                                <li>Never click links in suspicious emails</li>
+                                <li>Use strong, unique passwords</li>
+                                <li>Enable two-factor authentication where available</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Reporting Fraud</h6>
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h6>Contact These Authorities:</h6>
+                                    <p class="mb-2">
+                                        <strong>NamFISA:</strong><br>
+                                        Phone: +264 61 290 5000<br>
+                                        Email: complaints@namfisa.com.na
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Namibian Police:</strong><br>
+                                        Phone: 10111 (Emergency)<br>
+                                        Report online fraud to Cyber Crime Unit
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Bank of Namibia:</strong><br>
+                                        Phone: +264 61 283 5111<br>
+                                        For banking-related fraud
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h6 class="text-primary mt-3">Recovery Steps</h6>
+                            <ol class="small">
+                                <li>Stop all communication with the scammer</li>
+                                <li>Contact your bank immediately</li>
+                                <li>Change all passwords and PINs</li>
+                                <li>Report to authorities</li>
+                                <li>Monitor accounts for unauthorized activity</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fraud Statistics -->
+            <div class="row mb-5">
+                <div class="col-lg-8">
+                    <div class="card bg-dark border-info">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Namibian Fraud Statistics (2024)
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3 mb-3">
+                                    <h4 class="text-danger">73%</h4>
+                                    <small class="text-muted">WhatsApp loan scams</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <h4 class="text-warning">N$2.3M</h4>
+                                    <small class="text-muted">Average monthly losses</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <h4 class="text-info">45%</h4>
+                                    <small class="text-muted">Victims aged 25-40</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <h4 class="text-success">15%</h4>
+                                    <small class="text-muted">Recovery rate</small>
+                                </div>
+                            </div>
+                            <canvas id="fraudTrendsChart" class="mt-3"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-header">
+                            <h6 class="text-warning mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>Quick Tips
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning alert-sm">
+                                <strong>Remember the 24-Hour Rule:</strong><br>
+                                Never make financial decisions under pressure. Sleep on it and verify independently.
+                            </div>
+                            <div class="alert alert-info alert-sm">
+                                <strong>Trust Your Instincts:</strong><br>
+                                If something feels wrong or too good to be true, it probably is.
+                            </div>
+                            <div class="alert alert-success alert-sm">
+                                <strong>Educate Others:</strong><br>
+                                Share fraud warnings with family and friends to protect your community.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Educational Resources -->
+            <div class="card bg-dark border-secondary">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-book me-2"></i>Additional Resources
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="text-secondary">Government Resources</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-external-link-alt me-2"></i><a href="https://www.namfisa.com.na" target="_blank" class="text-light">NamFISA Official Website</a></li>
+                                <li><i class="fas fa-external-link-alt me-2"></i><a href="https://www.bon.com.na" target="_blank" class="text-light">Bank of Namibia</a></li>
+                                <li><i class="fas fa-external-link-alt me-2"></i><a href="https://www.nampol.gov.na" target="_blank" class="text-light">Namibian Police</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-secondary">Educational Content</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-play me-2"></i>Fraud Awareness Videos</li>
+                                <li><i class="fas fa-file-pdf me-2"></i>Consumer Protection Guides</li>
+                                <li><i class="fas fa-podcast me-2"></i>Financial Safety Podcasts</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-secondary">Community Support</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-users me-2"></i>Local Consumer Groups</li>
+                                <li><i class="fas fa-comments me-2"></i>Online Safety Forums</li>
+                                <li><i class="fas fa-hands-helping me-2"></i>Victim Support Services</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fraud check functionality
+    const fraudChecks = document.querySelectorAll('.fraud-check');
+    const fraudResult = document.getElementById('fraudResult');
+    
+    fraudChecks.forEach(check => {
+        check.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.fraud-check:checked').length;
+            
+            if (checkedCount === 0) {
+                fraudResult.style.display = 'none';
+            } else {
+                let alertClass, message;
+                
+                if (checkedCount >= 4) {
+                    alertClass = 'alert-danger';
+                    message = '<strong>HIGH RISK:</strong> This appears to be a scam. Do not proceed. Report this to NamFISA immediately.';
+                } else if (checkedCount >= 2) {
+                    alertClass = 'alert-warning';
+                    message = '<strong>MEDIUM RISK:</strong> Several red flags present. Verify the lender\'s legitimacy before proceeding.';
+                } else {
+                    alertClass = 'alert-info';
+                    message = '<strong>LOW RISK:</strong> Some concerns present. Always verify lender credentials and read all terms carefully.';
+                }
+                
+                fraudResult.className = `alert ${alertClass} mt-3`;
+                fraudResult.innerHTML = message;
+                fraudResult.style.display = 'block';
+            }
+        });
+    });
+    
+    // Fraud trends chart
+    const ctx = document.getElementById('fraudTrendsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'WhatsApp Scams',
+                    data: [45, 52, 48, 61, 55, 67, 73, 69, 75, 71, 68, 73],
+                    borderColor: '#25D366',
+                    backgroundColor: 'rgba(37, 211, 102, 0.1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Email Phishing',
+                    data: [23, 28, 25, 31, 29, 33, 30, 35, 32, 37, 34, 31],
+                    borderColor: '#17a2b8',
+                    backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Phone Scams',
+                    data: [18, 22, 20, 25, 23, 27, 24, 28, 26, 30, 27, 25],
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Reported Cases',
+                        color: '#ffffff'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

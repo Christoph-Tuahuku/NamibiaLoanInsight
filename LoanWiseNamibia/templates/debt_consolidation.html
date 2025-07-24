@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+{% set page_title = "Debt Consolidation Calculator" %}
+{% set active_page = "consolidation" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-compress-arrows-alt me-3"></i>Debt Consolidation Calculator
+                </h1>
+                <p class="lead">Combine multiple debts into one loan and see if you can save money</p>
+            </div>
+
+            <!-- Consolidation Form -->
+            <form method="POST" id="consolidationForm">
+                <!-- Current Debts Section -->
+                <div class="card bg-dark border-primary mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Your Current Debts
+                        </h5>
+                    </div>
+                    <div class="card-body" id="debtsContainer">
+                        <!-- Debt Entry Template -->
+                        <div class="debt-entry row mb-3">
+                            <div class="col-md-3 mb-2">
+                                <label class="form-label">Debt Name</label>
+                                <input type="text" class="form-control" name="debt_name_0" placeholder="e.g., Credit Card">
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label">Balance (N$)</label>
+                                <input type="number" class="form-control" name="debt_balance_0" min="100" step="10">
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label">Interest Rate (%)</label>
+                                <input type="number" class="form-control" name="debt_rate_0" min="1" max="30" step="0.1">
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label">Monthly Payment (N$)</label>
+                                <input type="number" class="form-control" name="debt_payment_0" min="50" step="10">
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label">Remaining Term</label>
+                                <input type="number" class="form-control" name="debt_term_0" min="1" max="60" placeholder="Months">
+                            </div>
+                            <div class="col-md-1 mb-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-danger btn-sm remove-debt" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-outline-primary" id="addDebtBtn">
+                            <i class="fas fa-plus me-2"></i>Add Another Debt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Consolidation Loan Details -->
+                <div class="card bg-dark border-primary mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-handshake me-2"></i>Consolidation Loan Offer
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="consolidation_amount" class="form-label">Loan Amount (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="consolidation_amount" 
+                                           name="consolidation_amount" min="1000" step="100" required>
+                                </div>
+                                <div class="form-text">Amount needed to pay off all debts</div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="consolidation_rate" class="form-label">Interest Rate (%)</label>
+                                <input type="number" class="form-control" id="consolidation_rate" 
+                                       name="consolidation_rate" min="5" max="25" step="0.1" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="consolidation_term" class="form-label">Term (Months)</label>
+                                <input type="number" class="form-control" id="consolidation_term" 
+                                       name="consolidation_term" min="12" max="84" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="consolidation_fees" class="form-label">Setup Fees (N$)</label>
+                                <input type="number" class="form-control" id="consolidation_fees" 
+                                       name="consolidation_fees" min="0" step="50" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator me-2"></i>Analyze Consolidation
+                    </button>
+                </div>
+            </form>
+
+            <!-- Consolidation Results -->
+            {% if consolidation_result %}
+            <div class="card bg-dark border-success">
+                <div class="card-header">
+                    <h5 class="text-success mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Consolidation Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Summary -->
+                    <div class="alert alert-{{ 'success' if consolidation_result.savings.is_beneficial else 'warning' }}">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-{{ 'thumbs-up' if consolidation_result.savings.is_beneficial else 'exclamation-triangle' }} me-2"></i>
+                            {{ 'Recommended' if consolidation_result.savings.is_beneficial else 'Proceed with Caution' }}
+                        </h6>
+                        <p class="mb-0">{{ consolidation_result.recommendation }}</p>
+                    </div>
+
+                    <!-- Comparison Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-danger">
+                                <div class="card-header">
+                                    <h6 class="text-danger mb-0">Current Situation</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.current_situation.monthly_payment) }}</h5>
+                                            <small class="text-muted">Monthly Payment</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.current_situation.total_balance) }}</h5>
+                                            <small class="text-muted">Total Balance</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.current_situation.total_interest) }}</h5>
+                                            <small class="text-muted">Total Interest</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-header">
+                                    <h6 class="text-success mb-0">Consolidation Option</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.consolidation_option.monthly_payment) }}</h5>
+                                            <small class="text-muted">Monthly Payment</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.consolidation_option.loan_amount) }}</h5>
+                                            <small class="text-muted">Loan Amount</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-dark">N$ {{ "%.0f"|format(consolidation_result.consolidation_option.total_interest) }}</h5>
+                                            <small class="text-muted">Total Interest</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Savings Breakdown -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h3 class="text-{{ 'success' if consolidation_result.savings.monthly_savings > 0 else 'danger' }}">
+                                        {{ '+' if consolidation_result.savings.monthly_savings > 0 else '' }}N$ {{ "%.2f"|format(consolidation_result.savings.monthly_savings) }}
+                                    </h3>
+                                    <p class="mb-0 text-muted">Monthly Savings</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h3 class="text-{{ 'success' if consolidation_result.savings.interest_savings > 0 else 'danger' }}">
+                                        {{ '+' if consolidation_result.savings.interest_savings > 0 else '' }}N$ {{ "%.2f"|format(consolidation_result.savings.interest_savings) }}
+                                    </h3>
+                                    <p class="mb-0 text-muted">Total Interest Savings</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Benefits and Considerations -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-success">Benefits of Consolidation</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Single monthly payment</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Simplified debt management</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Potential lower interest rate</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Fixed repayment schedule</li>
+                                {% if consolidation_result.savings.monthly_savings > 0 %}
+                                <li><i class="fas fa-check text-success me-2"></i>Lower monthly payments</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-warning">Important Considerations</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Closing costs and fees</li>
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Longer repayment period</li>
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Need discipline to avoid new debt</li>
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>May affect credit score temporarily</li>
+                                {% if consolidation_result.savings.interest_savings < 0 %}
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Higher total interest cost</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Chart Visualization -->
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">Payment Comparison Chart</h6>
+                        <canvas id="consolidationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Tips and Information -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calculator text-info fa-2x mb-3"></i>
+                            <h6 class="card-title text-info">Smart Analysis</h6>
+                            <p class="card-text small">
+                                Compare total cost and monthly payment to make the best decision.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-warning fa-2x mb-3"></i>
+                            <h6 class="card-title text-warning">Avoid Future Debt</h6>
+                            <p class="card-text small">
+                                After consolidation, avoid taking on new debt to prevent financial stress.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line text-success fa-2x mb-3"></i>
+                            <h6 class="card-title text-success">Build Credit</h6>
+                            <p class="card-text small">
+                                Consistent payments on consolidated debt can improve your credit score.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let debtCount = 1;
+    
+    // Add debt functionality
+    document.getElementById('addDebtBtn').addEventListener('click', function() {
+        if (debtCount < 5) { // Limit to 5 debts
+            const container = document.getElementById('debtsContainer');
+            const newDebt = container.querySelector('.debt-entry').cloneNode(true);
+            
+            // Update names and clear values
+            const inputs = newDebt.querySelectorAll('input');
+            inputs.forEach(input => {
+                const name = input.name;
+                const newName = name.replace(/_\d+$/, '_' + debtCount);
+                input.name = newName;
+                input.value = '';
+            });
+            
+            // Enable remove button
+            const removeBtn = newDebt.querySelector('.remove-debt');
+            removeBtn.disabled = false;
+            removeBtn.addEventListener('click', function() {
+                newDebt.remove();
+                updateRemoveButtons();
+            });
+            
+            container.appendChild(newDebt);
+            debtCount++;
+            updateRemoveButtons();
+        }
+    });
+    
+    function updateRemoveButtons() {
+        const debts = document.querySelectorAll('.debt-entry');
+        debts.forEach((debt, index) => {
+            const removeBtn = debt.querySelector('.remove-debt');
+            removeBtn.disabled = debts.length === 1;
+        });
+    }
+    
+    // Auto-calculate total debt amount
+    function calculateTotalDebts() {
+        let total = 0;
+        document.querySelectorAll('input[name^="debt_balance_"]').forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        
+        const consolidationAmount = document.getElementById('consolidation_amount');
+        if (total > 0) {
+            consolidationAmount.value = total;
+        }
+    }
+    
+    // Add event listeners to balance inputs
+    document.addEventListener('input', function(e) {
+        if (e.target.name && e.target.name.startsWith('debt_balance_')) {
+            calculateTotalDebts();
+        }
+    });
+    
+    {% if consolidation_result %}
+    // Chart for consolidation comparison
+    const ctx = document.getElementById('consolidationChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Current Debts', 'Consolidation Loan'],
+            datasets: [
+                {
+                    label: 'Monthly Payment',
+                    data: [
+                        {{ consolidation_result.current_situation.monthly_payment }},
+                        {{ consolidation_result.consolidation_option.monthly_payment }}
+                    ],
+                    backgroundColor: ['#dc3545', '#198754'],
+                    borderColor: ['#b02a37', '#157347'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Total Interest',
+                    data: [
+                        {{ consolidation_result.current_situation.total_interest }},
+                        {{ consolidation_result.consolidation_option.total_interest }}
+                    ],
+                    backgroundColor: ['#ffc107', '#20c997'],
+                    borderColor: ['#ffca2c', '#0ca678'],
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#ffffff',
+                        callback: function(value) {
+                            return 'N$' + value.toLocaleString();
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+});
+</script>
+{% endblock %}

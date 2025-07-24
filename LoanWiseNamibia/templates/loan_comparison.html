@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+{% set page_title = "Loan Comparison Tool" %}
+{% set active_page = "comparison" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-balance-scale me-3"></i>Loan Comparison Tool
+                </h1>
+                <p class="lead">Compare up to 3 loan options side by side to find the best deal</p>
+            </div>
+
+            <!-- Comparison Form -->
+            <form method="POST" id="comparisonForm">
+                <div class="card bg-dark border-primary mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calculator me-2"></i>Loan Parameters
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="loan_amount" class="form-label">Loan Amount (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="loan_amount" name="loan_amount" 
+                                           min="1000" max="100000" step="100" value="{{ request.form.loan_amount or '10000' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="loan_term" class="form-label">Loan Term (Months)</label>
+                                <input type="number" class="form-control" id="loan_term" name="loan_term" 
+                                       min="1" max="84" value="{{ request.form.loan_term or '12' }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Options -->
+                <div class="row">
+                    {% for i in range(3) %}
+                    <div class="col-lg-4 mb-4">
+                        <div class="card bg-dark border-primary h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0">Option {{ i + 1 }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="lender_name_{{ i }}" class="form-label">Lender Name</label>
+                                    <input type="text" class="form-control" id="lender_name_{{ i }}" 
+                                           name="lender_name_{{ i }}" placeholder="e.g., First National Bank"
+                                           value="{{ request.form['lender_name_' + i|string] or '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lender_type_{{ i }}" class="form-label">Lender Type</label>
+                                    <select class="form-select" id="lender_type_{{ i }}" name="lender_type_{{ i }}">
+                                        <option value="">Select type...</option>
+                                        <option value="bank" {{ 'selected' if request.form['lender_type_' + i|string] == 'bank' else '' }}>Bank</option>
+                                        <option value="microlender" {{ 'selected' if request.form['lender_type_' + i|string] == 'microlender' else '' }}>Microlender</option>
+                                        <option value="credit_provider" {{ 'selected' if request.form['lender_type_' + i|string] == 'credit_provider' else '' }}>Credit Provider</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="annual_rate_{{ i }}" class="form-label">Annual Interest Rate (%)</label>
+                                    <input type="number" class="form-control" id="annual_rate_{{ i }}" 
+                                           name="annual_rate_{{ i }}" min="1" max="30" step="0.1"
+                                           placeholder="e.g., 16.8" value="{{ request.form['annual_rate_' + i|string] or '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="admin_fee_{{ i }}" class="form-label">Admin Fee (N$)</label>
+                                    <input type="number" class="form-control" id="admin_fee_{{ i }}" 
+                                           name="admin_fee_{{ i }}" min="0" max="5000" step="1"
+                                           placeholder="0" value="{{ request.form['admin_fee_' + i|string] or '0' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="insurance_{{ i }}" class="form-label">Insurance Cost (N$)</label>
+                                    <input type="number" class="form-control" id="insurance_{{ i }}" 
+                                           name="insurance_{{ i }}" min="0" max="2000" step="1"
+                                           placeholder="0" value="{{ request.form['insurance_' + i|string] or '0' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator me-2"></i>Compare Loans
+                    </button>
+                </div>
+            </form>
+
+            <!-- Comparison Results -->
+            {% if comparison_result %}
+            <div class="card bg-dark border-success">
+                <div class="card-header">
+                    <h5 class="text-success mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Comparison Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Summary -->
+                    <div class="alert alert-info mb-4">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-trophy me-2"></i>Best Option: {{ comparison_result.best_option.lender_name }}
+                        </h6>
+                        <p class="mb-1">
+                            <strong>Monthly Payment:</strong> N$ {{ "%.2f"|format(comparison_result.best_option.monthly_payment) }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Total Repayment:</strong> N$ {{ "%.2f"|format(comparison_result.best_option.total_repayment) }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>You could save:</strong> N$ {{ "%.2f"|format(comparison_result.savings_amount) }} 
+                            compared to the most expensive option
+                        </p>
+                    </div>
+
+                    <!-- Detailed Comparison Table -->
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Lender</th>
+                                    <th>Type</th>
+                                    <th>Interest Rate</th>
+                                    <th>Monthly Payment</th>
+                                    <th>Total Repayment</th>
+                                    <th>Total Interest</th>
+                                    <th>Compliance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for option in comparison_result.options %}
+                                <tr class="{{ 'table-success' if option == comparison_result.best_option else 'table-danger' if option == comparison_result.worst_option else '' }}">
+                                    <td>
+                                        {{ option.lender_name }}
+                                        {% if option == comparison_result.best_option %}
+                                        <span class="badge bg-success ms-2">Best</span>
+                                        {% elif option == comparison_result.worst_option %}
+                                        <span class="badge bg-danger ms-2">Most Expensive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ option.lender_type|title }}</td>
+                                    <td>{{ "%.2f"|format(option.annual_rate) }}%</td>
+                                    <td>N$ {{ "%.2f"|format(option.monthly_payment) }}</td>
+                                    <td>N$ {{ "%.2f"|format(option.total_repayment) }}</td>
+                                    <td>N$ {{ "%.2f"|format(option.total_interest) }}</td>
+                                    <td>
+                                        {% if option.compliance_status == 'compliant' %}
+                                        <span class="badge bg-success">Compliant</span>
+                                        {% elif option.compliance_status == 'warning' %}
+                                        <span class="badge bg-warning">Warning</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Non-Compliant</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Charts and Visual Comparison -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary">Monthly Payment Comparison</h6>
+                            <canvas id="monthlyPaymentChart"></canvas>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary">Total Cost Comparison</h6>
+                            <canvas id="totalCostChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown -->
+                    <div class="row mt-4">
+                        {% for option in comparison_result.options %}
+                        <div class="col-lg-4 mb-3">
+                            <div class="card border-{{ 'success' if option == comparison_result.best_option else 'danger' if option == comparison_result.worst_option else 'secondary' }}">
+                                <div class="card-header">
+                                    <h6 class="mb-0">{{ option.lender_name }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-6 mb-2">
+                                            <div class="border-end">
+                                                <h6 class="text-dark">N$ {{ "%.2f"|format(option.monthly_payment) }}</h6>
+                                                <small class="text-muted">Monthly</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <h6 class="text-dark">N$ {{ "%.2f"|format(option.total_repayment) }}</h6>
+                                            <small class="text-muted">Total</small>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="small">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Interest Rate:</span>
+                                            <span>{{ "%.2f"|format(option.annual_rate) }}%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Total Interest:</span>
+                                            <span>N$ {{ "%.2f"|format(option.total_interest) }}</span>
+                                        </div>
+                                        {% if option.total_fees > 0 %}
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Total Fees:</span>
+                                            <span>N$ {{ "%.2f"|format(option.total_fees) }}</span>
+                                        </div>
+                                        {% endif %}
+                                        <div class="d-flex justify-content-between">
+                                            <span>Effective APR:</span>
+                                            <span>{{ "%.2f"|format(option.effective_apr) }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Information Cards -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-lightbulb text-info fa-2x mb-3"></i>
+                            <h6 class="card-title text-info">Smart Comparison</h6>
+                            <p class="card-text small">
+                                Compare total cost, not just monthly payments. Include all fees for accurate comparison.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-warning fa-2x mb-3"></i>
+                            <h6 class="card-title text-warning">Compliance Check</h6>
+                            <p class="card-text small">
+                                All options are checked against NamFISA regulations for your protection.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-piggy-bank text-success fa-2x mb-3"></i>
+                            <h6 class="card-title text-success">Savings Calculator</h6>
+                            <p class="card-text small">
+                                See exactly how much you save by choosing the best option.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if comparison_result %}
+    // Prepare data for charts
+    const lenders = {{ comparison_result.options|map(attribute='lender_name')|list|tojson }};
+    const monthlyPayments = {{ comparison_result.options|map(attribute='monthly_payment')|list|tojson }};
+    const totalCosts = {{ comparison_result.options|map(attribute='total_repayment')|list|tojson }};
+    
+    // Monthly Payment Chart
+    const monthlyCtx = document.getElementById('monthlyPaymentChart').getContext('2d');
+    new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: lenders,
+            datasets: [{
+                label: 'Monthly Payment (N$)',
+                data: monthlyPayments,
+                backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                borderColor: ['#157347', '#ffca2c', '#b02a37'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#ffffff',
+                        callback: function(value) {
+                            return 'N$' + value.toLocaleString();
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                }
+            }
+        }
+    });
+    
+    // Total Cost Chart
+    const totalCtx = document.getElementById('totalCostChart').getContext('2d');
+    new Chart(totalCtx, {
+        type: 'bar',
+        data: {
+            labels: lenders,
+            datasets: [{
+                label: 'Total Repayment (N$)',
+                data: totalCosts,
+                backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                borderColor: ['#157347', '#ffca2c', '#b02a37'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#ffffff',
+                        callback: function(value) {
+                            return 'N$' + value.toLocaleString();
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+});
+</script>
+{% endblock %}

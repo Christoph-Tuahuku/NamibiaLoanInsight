@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+{% set page_title = "Financial Literacy Hub" %}
+{% set active_page = "literacy" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-graduation-cap me-3"></i>Financial Literacy Hub
+                </h1>
+                <p class="lead">Learn smart financial management for a secure future</p>
+            </div>
+
+            <!-- Featured Tips -->
+            <div class="row mb-5">
+                <div class="col-lg-8">
+                    <div class="card bg-dark border-primary">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-star text-warning me-2"></i>Featured Financial Tip
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="text-primary">The 50/30/20 Budget Rule</h6>
+                            <p>A simple budgeting framework that allocates your after-tax income:</p>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="text-center p-3 border border-success rounded">
+                                        <h4 class="text-success">50%</h4>
+                                        <p class="mb-0">Essential Needs</p>
+                                        <small class="text-muted">Housing, food, utilities, transport</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="text-center p-3 border border-warning rounded">
+                                        <h4 class="text-warning">30%</h4>
+                                        <p class="mb-0">Lifestyle Wants</p>
+                                        <small class="text-muted">Entertainment, dining out, hobbies</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="text-center p-3 border border-info rounded">
+                                        <h4 class="text-info">20%</h4>
+                                        <p class="mb-0">Savings & Debt</p>
+                                        <small class="text-muted">Emergency fund, investments, debt repayment</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card bg-dark border-danger h-100">
+                        <div class="card-header">
+                            <h6 class="text-danger mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Fraud Alert
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <h6>Loan Scam Warning</h6>
+                            <p class="small">Beware of "guaranteed approval" loans requiring upfront fees. Legitimate lenders never ask for money before approving your loan.</p>
+                            <div class="alert alert-danger alert-sm">
+                                <strong>Red Flags:</strong>
+                                <ul class="mb-0 small">
+                                    <li>Upfront fees</li>
+                                    <li>No license verification</li>
+                                    <li>Pressure tactics</li>
+                                    <li>Too-good-to-be-true rates</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Categories -->
+            <div class="row mb-5">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-primary h-100 category-card" data-category="budgeting">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-pie text-primary fa-3x mb-3"></i>
+                            <h6 class="card-title">Budgeting Basics</h6>
+                            <p class="card-text small">Learn to track income, expenses, and build a sustainable budget.</p>
+                            <button class="btn btn-outline-primary btn-sm">Explore</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-success h-100 category-card" data-category="saving">
+                        <div class="card-body text-center">
+                            <i class="fas fa-piggy-bank text-success fa-3x mb-3"></i>
+                            <h6 class="card-title">Smart Saving</h6>
+                            <p class="card-text small">Build emergency funds and achieve your financial goals.</p>
+                            <button class="btn btn-outline-success btn-sm">Explore</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-warning h-100 category-card" data-category="borrowing">
+                        <div class="card-body text-center">
+                            <i class="fas fa-handshake text-warning fa-3x mb-3"></i>
+                            <h6 class="card-title">Responsible Borrowing</h6>
+                            <p class="card-text small">Understand loans, interest rates, and borrowing safely.</p>
+                            <button class="btn btn-outline-warning btn-sm">Explore</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-info h-100 category-card" data-category="investing">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line text-info fa-3x mb-3"></i>
+                            <h6 class="card-title">Investment Basics</h6>
+                            <p class="card-text small">Start building wealth through smart investment choices.</p>
+                            <button class="btn btn-outline-info btn-sm">Explore</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div id="contentArea">
+                <!-- Budgeting Content -->
+                <div class="content-section" id="budgeting" style="display: none;">
+                    <div class="card bg-dark border-primary">
+                        <div class="card-header">
+                            <h5 class="mb-0">Budgeting Basics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-primary">Creating Your First Budget</h6>
+                                    <ol>
+                                        <li><strong>Calculate Your Income:</strong> Add up all sources of monthly income after taxes</li>
+                                        <li><strong>List Fixed Expenses:</strong> Rent, insurance, loan payments, utilities</li>
+                                        <li><strong>Track Variable Expenses:</strong> Food, transport, entertainment for one month</li>
+                                        <li><strong>Set Savings Goals:</strong> Aim for at least 10% of income</li>
+                                        <li><strong>Adjust and Monitor:</strong> Review monthly and make necessary changes</li>
+                                    </ol>
+
+                                    <h6 class="text-primary mt-4">Budgeting Tools</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="alert alert-info">
+                                                <strong>Envelope Method:</strong> Allocate cash for different spending categories
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="alert alert-info">
+                                                <strong>Zero-Based Budget:</strong> Every dollar has a purpose - income minus expenses equals zero
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card border-primary">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">Quick Budget Calculator</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Monthly Income</label>
+                                                <input type="number" class="form-control" id="budgetIncome" placeholder="N$ 15,000">
+                                            </div>
+                                            <div id="budgetBreakdown" style="display: none;">
+                                                <p><strong>Recommended Allocation:</strong></p>
+                                                <div class="small">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Needs (50%):</span>
+                                                        <span id="needsAmount">N$ 0</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Wants (30%):</span>
+                                                        <span id="wantsAmount">N$ 0</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Savings (20%):</span>
+                                                        <span id="savingsAmount">N$ 0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saving Content -->
+                <div class="content-section" id="saving" style="display: none;">
+                    <div class="card bg-dark border-success">
+                        <div class="card-header">
+                            <h5 class="mb-0">Smart Saving Strategies</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success">Emergency Fund</h6>
+                                    <p>Your first priority should be building an emergency fund covering 3-6 months of expenses.</p>
+                                    <div class="alert alert-success">
+                                        <strong>Emergency Fund Calculator:</strong><br>
+                                        Monthly Expenses × 3 = Minimum Emergency Fund<br>
+                                        Monthly Expenses × 6 = Ideal Emergency Fund
+                                    </div>
+
+                                    <h6 class="text-success mt-4">Saving Tips for Namibians</h6>
+                                    <ul>
+                                        <li>Use bank savings accounts with competitive rates</li>
+                                        <li>Consider fixed deposits for longer-term goals</li>
+                                        <li>Automate your savings - pay yourself first</li>
+                                        <li>Take advantage of end-of-year bonuses</li>
+                                        <li>Review and negotiate recurring expenses annually</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-success">Savings Goals</h6>
+                                    <div class="card border-success">
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Savings Goal</label>
+                                                <input type="number" class="form-control" id="savingsGoal" placeholder="N$ 10,000">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Monthly Savings</label>
+                                                <input type="number" class="form-control" id="monthlySavings" placeholder="N$ 500">
+                                            </div>
+                                            <div id="savingsTimeline" style="display: none;">
+                                                <div class="alert alert-info">
+                                                    <strong>Time to Goal:</strong> <span id="timeToGoal"></span> months
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-success mt-3">Common Savings Mistakes</h6>
+                                    <div class="alert alert-warning">
+                                        <ul class="mb-0 small">
+                                            <li>Not having clear goals</li>
+                                            <li>Saving only what's left over</li>
+                                            <li>Keeping all money in low-interest accounts</li>
+                                            <li>Dipping into emergency funds for non-emergencies</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Borrowing Content -->
+                <div class="content-section" id="borrowing" style="display: none;">
+                    <div class="card bg-dark border-warning">
+                        <div class="card-header">
+                            <h5 class="mb-0">Responsible Borrowing</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-warning">Before You Borrow</h6>
+                                    <div class="checklist">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check1">
+                                            <label class="form-check-label" for="check1">
+                                                Do I really need this loan?
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check2">
+                                            <label class="form-check-label" for="check2">
+                                                Have I compared multiple lenders?
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check3">
+                                            <label class="form-check-label" for="check3">
+                                                Can I afford the monthly payments?
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check4">
+                                            <label class="form-check-label" for="check4">
+                                                Is the lender NamFISA registered?
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check5">
+                                            <label class="form-check-label" for="check5">
+                                                Do I understand all fees and terms?
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-warning mt-4">Namibian Lending Laws</h6>
+                                    <div class="alert alert-info">
+                                        <strong>Your Rights:</strong>
+                                        <ul class="mb-0 small">
+                                            <li>Maximum interest rate is limited by NamFISA</li>
+                                            <li>All fees must be disclosed upfront</li>
+                                            <li>You have a cooling-off period</li>
+                                            <li>Harassment by debt collectors is illegal</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-warning">Understanding Interest Rates</h6>
+                                    <p>Always focus on the <strong>APR (Annual Percentage Rate)</strong> which includes all costs.</p>
+                                    
+                                    <div class="card border-warning">
+                                        <div class="card-body">
+                                            <h6>Interest Rate Calculator</h6>
+                                            <div class="mb-2">
+                                                <label class="form-label small">Loan Amount</label>
+                                                <input type="number" class="form-control form-control-sm" id="loanAmount" placeholder="N$ 10,000">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label small">Interest Rate (%)</label>
+                                                <input type="number" class="form-control form-control-sm" id="interestRate" placeholder="16.8">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label small">Term (months)</label>
+                                                <input type="number" class="form-control form-control-sm" id="loanTerm" placeholder="12">
+                                            </div>
+                                            <div id="interestCalculation" style="display: none;">
+                                                <div class="alert alert-info alert-sm">
+                                                    <div class="small">
+                                                        <div>Monthly Payment: <strong id="monthlyPayment">N$ 0</strong></div>
+                                                        <div>Total Interest: <strong id="totalInterest">N$ 0</strong></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-warning mt-3">Debt Warning Signs</h6>
+                                    <div class="alert alert-danger">
+                                        <strong>Seek help if you:</strong>
+                                        <ul class="mb-0 small">
+                                            <li>Borrow to pay other debts</li>
+                                            <li>Only make minimum payments</li>
+                                            <li>Use credit for basic needs</li>
+                                            <li>Avoid opening bills</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investing Content -->
+                <div class="content-section" id="investing" style="display: none;">
+                    <div class="card bg-dark border-info">
+                        <div class="card-header">
+                            <h5 class="mb-0">Investment Basics for Namibians</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-info">Getting Started</h6>
+                                    <p>Before investing, ensure you have:</p>
+                                    <ul>
+                                        <li>Emergency fund (3-6 months expenses)</li>
+                                        <li>High-interest debt paid off</li>
+                                        <li>Clear financial goals</li>
+                                        <li>Basic investment knowledge</li>
+                                    </ul>
+
+                                    <h6 class="text-info">Investment Options in Namibia</h6>
+                                    <div class="accordion" id="investmentAccordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                                    Bank Fixed Deposits
+                                                </button>
+                                            </h2>
+                                            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#investmentAccordion">
+                                                <div class="accordion-body">
+                                                    Low risk, guaranteed returns. Good for emergency funds and short-term goals.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                                    Unit Trusts
+                                                </button>
+                                            </h2>
+                                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#investmentAccordion">
+                                                <div class="accordion-body">
+                                                    Pooled investments managed by professionals. Diversified but with market risk.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                                    NSX (Namibian Stock Exchange)
+                                                </button>
+                                            </h2>
+                                            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#investmentAccordion">
+                                                <div class="accordion-body">
+                                                    Direct stock ownership. Higher potential returns but requires research and risk tolerance.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-info">Risk vs Return</h6>
+                                    <div class="card border-info">
+                                        <div class="card-body">
+                                            <canvas id="riskReturnChart"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-info mt-3">Investment Rules</h6>
+                                    <div class="alert alert-info">
+                                        <ol class="mb-0 small">
+                                            <li><strong>Diversify:</strong> Don't put all eggs in one basket</li>
+                                            <li><strong>Start Early:</strong> Time is your friend</li>
+                                            <li><strong>Regular Investing:</strong> Consistent monthly contributions</li>
+                                            <li><strong>Understand Fees:</strong> High fees reduce returns</li>
+                                            <li><strong>Stay Informed:</strong> Research before investing</li>
+                                        </ol>
+                                    </div>
+
+                                    <h6 class="text-info">Compound Interest Example</h6>
+                                    <div class="small">
+                                        <p>Investing N$500 monthly at 8% annual return:</p>
+                                        <ul class="mb-0">
+                                            <li>After 10 years: N$91,524</li>
+                                            <li>After 20 years: N$294,510</li>
+                                            <li>After 30 years: N$679,014</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact for More Information -->
+            <div class="card bg-dark border-secondary mt-5">
+                <div class="card-body text-center">
+                    <h6 class="text-secondary">Need Personal Financial Advice?</h6>
+                    <p class="mb-3">While this hub provides general education, consider consulting with a qualified financial advisor for personalized guidance.</p>
+                    <a href="{{ url_for('contact') }}" class="btn btn-outline-secondary">Contact Us for More Resources</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category navigation
+    const categoryCards = document.querySelectorAll('.category-card');
+    const contentSections = document.querySelectorAll('.content-section');
+    
+    categoryCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Hide all content sections
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected content
+            document.getElementById(category).style.display = 'block';
+            
+            // Scroll to content
+            document.getElementById('contentArea').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // Budget calculator
+    document.getElementById('budgetIncome').addEventListener('input', function() {
+        const income = parseFloat(this.value) || 0;
+        if (income > 0) {
+            document.getElementById('needsAmount').textContent = 'N$ ' + (income * 0.5).toLocaleString();
+            document.getElementById('wantsAmount').textContent = 'N$ ' + (income * 0.3).toLocaleString();
+            document.getElementById('savingsAmount').textContent = 'N$ ' + (income * 0.2).toLocaleString();
+            document.getElementById('budgetBreakdown').style.display = 'block';
+        } else {
+            document.getElementById('budgetBreakdown').style.display = 'none';
+        }
+    });
+    
+    // Savings calculator
+    function updateSavingsCalculation() {
+        const goal = parseFloat(document.getElementById('savingsGoal').value) || 0;
+        const monthly = parseFloat(document.getElementById('monthlySavings').value) || 0;
+        
+        if (goal > 0 && monthly > 0) {
+            const months = Math.ceil(goal / monthly);
+            document.getElementById('timeToGoal').textContent = months;
+            document.getElementById('savingsTimeline').style.display = 'block';
+        } else {
+            document.getElementById('savingsTimeline').style.display = 'none';
+        }
+    }
+    
+    document.getElementById('savingsGoal').addEventListener('input', updateSavingsCalculation);
+    document.getElementById('monthlySavings').addEventListener('input', updateSavingsCalculation);
+    
+    // Interest calculator
+    function updateInterestCalculation() {
+        const principal = parseFloat(document.getElementById('loanAmount').value) || 0;
+        const rate = parseFloat(document.getElementById('interestRate').value) || 0;
+        const term = parseFloat(document.getElementById('loanTerm').value) || 0;
+        
+        if (principal > 0 && rate > 0 && term > 0) {
+            const monthlyRate = rate / 100 / 12;
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+            const totalInterest = (monthlyPayment * term) - principal;
+            
+            document.getElementById('monthlyPayment').textContent = 'N$ ' + monthlyPayment.toFixed(2);
+            document.getElementById('totalInterest').textContent = 'N$ ' + totalInterest.toFixed(2);
+            document.getElementById('interestCalculation').style.display = 'block';
+        } else {
+            document.getElementById('interestCalculation').style.display = 'none';
+        }
+    }
+    
+    document.getElementById('loanAmount').addEventListener('input', updateInterestCalculation);
+    document.getElementById('interestRate').addEventListener('input', updateInterestCalculation);
+    document.getElementById('loanTerm').addEventListener('input', updateInterestCalculation);
+    
+    // Risk-Return Chart
+    const ctx = document.getElementById('riskReturnChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Investment Options',
+                data: [
+                    {x: 1, y: 4, label: 'Fixed Deposits'},
+                    {x: 3, y: 7, label: 'Bonds'},
+                    {x: 5, y: 8, label: 'Unit Trusts'},
+                    {x: 8, y: 12, label: 'Stocks'}
+                ],
+                backgroundColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545'],
+                borderColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545'],
+                pointRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Risk Level (1-10)',
+                        color: '#ffffff'
+                    },
+                    min: 0,
+                    max: 10,
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Expected Return (%)',
+                        color: '#ffffff'
+                    },
+                    min: 0,
+                    max: 15,
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

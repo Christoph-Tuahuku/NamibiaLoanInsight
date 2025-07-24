@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% set page_title = "NamFISA Registered Lenders" %}
+{% set active_page = "lenders" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-university me-3"></i>NamFISA Registered Lenders
+                </h1>
+                <p class="lead">Find verified, licensed lenders in Namibia</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    All lenders listed are officially registered with NamFISA (Namibia Financial Institutions Supervisory Authority)
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card bg-dark border-primary mb-4">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search Lenders</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   placeholder="Search by name or license..." value="{{ request.args.get('search', '') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="lender_type" class="form-label">Type</label>
+                            <select class="form-select" id="lender_type" name="lender_type">
+                                <option value="">All Types</option>
+                                <option value="bank" {{ 'selected' if request.args.get('lender_type') == 'bank' else '' }}>Banks</option>
+                                <option value="microlender" {{ 'selected' if request.args.get('lender_type') == 'microlender' else '' }}>Microlenders</option>
+                                <option value="credit_provider" {{ 'selected' if request.args.get('lender_type') == 'credit_provider' else '' }}>Credit Providers</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="location" class="form-label">Location</label>
+                            <select class="form-select" id="location" name="location">
+                                <option value="">All Locations</option>
+                                <option value="windhoek" {{ 'selected' if request.args.get('location') == 'windhoek' else '' }}>Windhoek</option>
+                                <option value="walvis_bay" {{ 'selected' if request.args.get('location') == 'walvis_bay' else '' }}>Walvis Bay</option>
+                                <option value="swakopmund" {{ 'selected' if request.args.get('location') == 'swakopmund' else '' }}>Swakopmund</option>
+                                <option value="oshakati" {{ 'selected' if request.args.get('location') == 'oshakati' else '' }}>Oshakati</option>
+                                <option value="rundu" {{ 'selected' if request.args.get('location') == 'rundu' else '' }}>Rundu</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lenders Directory -->
+            <div class="row">
+                {% if lenders %}
+                    {% for lender in lenders %}
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-dark border-primary h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ lender.name }}</h6>
+                                <span class="badge bg-{{ 'success' if lender.lender_type == 'bank' else 'primary' if lender.lender_type == 'microlender' else 'info' }}">
+                                    {{ lender.lender_type|title }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><strong>License:</strong> {{ lender.license_number }}</p>
+                                        {% if lender.current_rates_min and lender.current_rates_max %}
+                                        <p class="mb-2">
+                                            <strong>Interest Rates:</strong> 
+                                            {{ "%.1f"|format(lender.current_rates_min) }}% - {{ "%.1f"|format(lender.current_rates_max) }}%
+                                        </p>
+                                        {% endif %}
+                                        {% if lender.max_loan_amount %}
+                                        <p class="mb-2"><strong>Max Loan:</strong> N$ {{ "{:,.0f}"|format(lender.max_loan_amount) }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if lender.contact_phone %}
+                                        <p class="mb-2">
+                                            <i class="fas fa-phone me-2"></i>
+                                            <a href="tel:{{ lender.contact_phone }}" class="text-light">{{ lender.contact_phone }}</a>
+                                        </p>
+                                        {% endif %}
+                                        {% if lender.contact_email %}
+                                        <p class="mb-2">
+                                            <i class="fas fa-envelope me-2"></i>
+                                            <a href="mailto:{{ lender.contact_email }}" class="text-light">{{ lender.contact_email }}</a>
+                                        </p>
+                                        {% endif %}
+                                        {% if lender.website %}
+                                        <p class="mb-2">
+                                            <i class="fas fa-globe me-2"></i>
+                                            <a href="{{ lender.website }}" target="_blank" class="text-light">Visit Website</a>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if lender.physical_address %}
+                                <div class="mt-3">
+                                    <p class="mb-2">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        {{ lender.physical_address }}
+                                    </p>
+                                </div>
+                                {% endif %}
+
+                                <!-- Reviews Summary -->
+                                {% if lender.reviews %}
+                                <div class="mt-3 pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="text-warning">
+                                                {% for i in range(5) %}
+                                                    <i class="fas fa-star{{ '' if i < (lender.reviews|map(attribute='rating')|sum / lender.reviews|length)|round else '-o' }}"></i>
+                                                {% endfor %}
+                                            </span>
+                                            <small class="text-muted ms-2">({{ lender.reviews|length }} reviews)</small>
+                                        </div>
+                                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#lender{{ lender.id }}Modal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lender Detail Modal -->
+                    <div class="modal fade" id="lender{{ lender.id }}Modal" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content bg-dark">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ lender.name }}</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">Lender Information</h6>
+                                            <p><strong>License Number:</strong> {{ lender.license_number }}</p>
+                                            <p><strong>Type:</strong> {{ lender.lender_type|title }}</p>
+                                            {% if lender.max_term_months %}
+                                            <p><strong>Max Term:</strong> {{ lender.max_term_months }} months</p>
+                                            {% endif %}
+                                            <p><strong>Last Updated:</strong> {{ lender.last_updated.strftime('%Y-%m-%d') if lender.last_updated else 'N/A' }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">Contact Details</h6>
+                                            {% if lender.contact_phone %}
+                                            <p><i class="fas fa-phone me-2"></i>{{ lender.contact_phone }}</p>
+                                            {% endif %}
+                                            {% if lender.contact_email %}
+                                            <p><i class="fas fa-envelope me-2"></i>{{ lender.contact_email }}</p>
+                                            {% endif %}
+                                            {% if lender.physical_address %}
+                                            <p><i class="fas fa-map-marker-alt me-2"></i>{{ lender.physical_address }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if lender.reviews %}
+                                    <hr>
+                                    <h6 class="text-primary">Customer Reviews</h6>
+                                    {% for review in lender.reviews[-3:] %}
+                                    <div class="card bg-secondary mb-2">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <span class="text-warning">
+                                                        {% for i in range(5) %}
+                                                            <i class="fas fa-star{{ '' if i < review.rating else '-o' }}"></i>
+                                                        {% endfor %}
+                                                    </span>
+                                                    <small class="text-muted ms-2">{{ review.created_at.strftime('%Y-%m-%d') if review.created_at else '' }}</small>
+                                                </div>
+                                                {% if review.is_verified %}
+                                                <span class="badge bg-success">Verified</span>
+                                                {% endif %}
+                                            </div>
+                                            {% if review.review_text %}
+                                            <p class="mt-2 mb-0">{{ review.review_text[:150] }}{% if review.review_text|length > 150 %}...{% endif %}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    {% if lender.website %}
+                                    <a href="{{ lender.website }}" target="_blank" class="btn btn-primary">Visit Website</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-search me-2"></i>
+                            No lenders found matching your criteria. Try adjusting your search filters.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Information Cards -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-success fa-2x mb-3"></i>
+                            <h6 class="card-title text-success">Verified Lenders</h6>
+                            <p class="card-text small">
+                                All lenders are officially registered with NamFISA and comply with regulations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star text-info fa-2x mb-3"></i>
+                            <h6 class="card-title text-info">Customer Reviews</h6>
+                            <p class="card-text small">
+                                Read verified customer experiences to make informed decisions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x mb-3"></i>
+                            <h6 class="card-title text-warning">Compare Options</h6>
+                            <p class="card-text small">
+                                Always compare rates, terms, and fees before making a decision.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NamFISA Information -->
+            <div class="card bg-dark border-primary mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>About NamFISA Registration
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>The Namibia Financial Institutions Supervisory Authority (NamFISA) regulates all financial institutions in Namibia to ensure:</p>
+                            <ul>
+                                <li>Fair lending practices</li>
+                                <li>Transparent pricing</li>
+                                <li>Consumer protection</li>
+                                <li>Regulatory compliance</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Verify Lender Registration:</strong></p>
+                            <p>Always verify a lender's registration status with NamFISA before borrowing. Visit the official NamFISA website at www.namfisa.com.na</p>
+                            <p><strong>Report Issues:</strong> If you experience problems with a registered lender, contact NamFISA directly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

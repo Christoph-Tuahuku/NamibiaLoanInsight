@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Namibia Loan Insight{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold text-primary mb-4">
+                        Smart Financial Decisions for Namibians
+                    </h1>
+                    <p class="lead mb-4">
+                        Navigate Namibia's loan landscape with confidence. Our tools help you calculate loan costs, 
+                        assess risks, and ensure compliance with NamFISA and Bank of Namibia regulations.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{ url_for('loan_calculator') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calculator me-2"></i>Calculate Loans
+                        </a>
+                        <a href="{{ url_for('risk_analyzer') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>Assess Risk
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image text-center">
+                    <i class="fas fa-shield-alt text-primary" style="font-size: 12rem; opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-calculator text-primary fa-3x mb-3"></i>
+                        <h5 class="card-title">Loan Calculator</h5>
+                        <p class="card-text">
+                            Calculate monthly payments, total interest, and costs for Cash Loans and Bank Loans 
+                            with built-in NamFISA compliance checking.
+                        </p>
+                        <a href="{{ url_for('loan_calculator') }}" class="btn btn-primary">Try Calculator</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line text-primary fa-3x mb-3"></i>
+                        <h5 class="card-title">Risk Analyzer</h5>
+                        <p class="card-text">
+                            Assess your loan risk profile based on income, credit score, and financial history. 
+                            Get personalized advice for responsible borrowing.
+                        </p>
+                        <a href="{{ url_for('risk_analyzer') }}" class="btn btn-primary">Analyze Risk</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 bg-dark border-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt text-primary fa-3x mb-3"></i>
+                        <h5 class="card-title">Regulatory Compliance</h5>
+                        <p class="card-text">
+                            Stay informed about NamFISA and Bank of Namibia regulations. 
+                            Ensure your loans comply with current Namibian financial laws.
+                        </p>
+                        <a href="#regulations" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Regulatory Information Section -->
+<section id="regulations" class="py-5 bg-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-center text-primary mb-5">Understanding Namibian Loan Regulations</h2>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="regulation-card p-4 border border-primary rounded">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-gavel me-2"></i>NamFISA Regulations
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Microlending: Maximum 16.8% APR (Prime Rate × 1.6)</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Term limits: Up to 60 months, max N$50,000</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Mandatory disclosure requirements</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Consumer protection measures</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="regulation-card p-4 border border-primary rounded">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-university me-2"></i>Bank of Namibia Standards
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Bank loans: 10.5% prime rate (current)</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Extended terms: Up to 84 months</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Transparent fee structures</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Responsible lending practices</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>Important Notice
+                    </h6>
+                    <p class="mb-0">
+                        Always verify that your lender is registered with NamFISA and complies with all 
+                        applicable regulations. This tool provides estimates for educational purposes only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Future Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="text-primary mb-4">Coming Soon: Financial Institution Directory</h2>
+                <p class="lead mb-4">
+                    In our next version, we'll feature a comprehensive directory of NamFISA-registered 
+                    financial institutions, making it easier to find and compare loan offers from 
+                    legitimate lenders across Namibia.
+                </p>
+                <div class="alert alert-info">
+                    <p class="mb-0">
+                        <i class="fas fa-rocket me-2"></i>
+                        <strong>Version 2.0 Preview:</strong> Direct links to verified lenders, 
+                        real-time rate comparisons, and partnership opportunities for financial institutions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

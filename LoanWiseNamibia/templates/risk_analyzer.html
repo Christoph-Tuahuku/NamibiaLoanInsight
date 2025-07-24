@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Risk Analyzer - Namibia Loan Insight{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h1 class="display-5 text-primary mb-3">
+                    <i class="fas fa-chart-line me-3"></i>Loan Risk Analyzer
+                </h1>
+                <p class="lead">
+                    Assess your loan risk profile and get personalized financial advice
+                </p>
+            </div>
+
+            <!-- Risk Analysis Form -->
+            <div class="card bg-dark border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>Your Financial Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="riskForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age"
+                                       value="{{ request.form.age if request.form.age else '' }}"
+                                       min="18" max="100" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="monthly_income" class="form-label">Monthly Income (NAD)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="monthly_income" name="monthly_income"
+                                           value="{{ request.form.monthly_income if request.form.monthly_income else '' }}"
+                                           min="1" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="credit_score" class="form-label">Credit Score (1-10)</label>
+                                <select class="form-select" id="credit_score" name="credit_score" required>
+                                    <option value="">Select credit score...</option>
+                                    {% for i in range(1, 11) %}
+                                    <option value="{{ i }}" {{ 'selected' if request.form.credit_score == i|string else '' }}>
+                                        {{ i }} - {{ 'Poor' if i <= 3 else 'Fair' if i <= 6 else 'Good' if i <= 8 else 'Excellent' }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">1 = Poor credit, 10 = Excellent credit</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="previous_defaults" class="form-label">Previous Defaults</label>
+                                <input type="number" class="form-control" id="previous_defaults" name="previous_defaults"
+                                       value="{{ request.form.previous_defaults if request.form.previous_defaults else '0' }}"
+                                       min="0" required>
+                                <div class="form-text">Number of times you've defaulted on loans</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="loan_amount" class="form-label">Requested Loan Amount (NAD)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">N$</span>
+                                <input type="number" class="form-control" id="loan_amount" name="loan_amount"
+                                       value="{{ request.form.loan_amount if request.form.loan_amount else '' }}"
+                                       min="1" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-chart-line me-2"></i>Analyze Risk
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            {% if result %}
+            <div class="card bg-dark border-primary mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-analytics me-2"></i>Risk Assessment Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Risk Level Display -->
+                    <div class="text-center mb-4">
+                        <div class="risk-level-display">
+                            <h3 class="text-{{ result.risk_color }} mb-2">
+                                <i class="fas fa-{{ 'check-circle' if result.risk_level == 'Low' else 'exclamation-triangle' if result.risk_level == 'Medium' else 'times-circle' }} me-2"></i>
+                                {{ result.risk_level }} Risk
+                            </h3>
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar bg-{{ result.risk_color }}" role="progressbar" 
+                                     style="width: {{ result.risk_score }}%">
+                                    Risk Score: {{ result.risk_score }}/100
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="financial-metric">
+                                <h6 class="text-primary">Debt-to-Income Ratio</h6>
+                                <h4 class="text-white">{{ "%.1f"|format(result.debt_to_income_ratio) }}%</h4>
+                                <small class="text-muted">
+                                    {{ 'Excellent' if result.debt_to_income_ratio <= 20 else 'Good' if result.debt_to_income_ratio <= 30 else 'Concerning' if result.debt_to_income_ratio <= 40 else 'High Risk' }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="financial-metric">
+                                <h6 class="text-primary">Credit Score</h6>
+                                <h4 class="text-white">{{ result.credit_score }}/10</h4>
+                                <small class="text-muted">
+                                    {{ 'Poor' if result.credit_score <= 3 else 'Fair' if result.credit_score <= 6 else 'Good' if result.credit_score <= 8 else 'Excellent' }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Summary -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Profile Detail</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Age</td>
+                                    <td>{{ result.age }} years</td>
+                                </tr>
+                                <tr>
+                                    <td>Monthly Income</td>
+                                    <td>N$ {{ "%.2f"|format(result.monthly_income) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Credit Score</td>
+                                    <td>{{ result.credit_score }}/10</td>
+                                </tr>
+                                <tr>
+                                    <td>Previous Defaults</td>
+                                    <td>{{ result.previous_defaults }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Requested Loan Amount</td>
+                                    <td>N$ {{ "%.2f"|format(result.loan_amount) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Personalized Advice -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-lightbulb me-2"></i>Personalized Advice
+                        </h6>
+                        {% for advice in result.advice %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-arrow-right me-2"></i>{{ advice }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Compliance Tips -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-shield-alt me-2"></i>Compliance & Safety Tips
+                        </h6>
+                        {% for tip in result.compliance_tips %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ tip }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Risk Level Explanation -->
+                    <div class="alert alert-dark border border-{{ result.risk_color }}">
+                        <h6 class="alert-heading text-{{ result.risk_color }}">
+                            Understanding Your {{ result.risk_level }} Risk Level
+                        </h6>
+                        {% if result.risk_level == 'Low' %}
+                        <p class="mb-0">
+                            Your financial profile indicates a low risk for loan default. You have stable income, 
+                            good credit, and manageable debt levels. Most lenders will view you favorably.
+                        </p>
+                        {% elif result.risk_level == 'Medium' %}
+                        <p class="mb-0">
+                            Your financial profile shows moderate risk factors. While you may qualify for loans, 
+                            consider improving your credit score or reducing the loan amount for better terms.
+                        </p>
+                        {% else %}
+                        <p class="mb-0">
+                            Your financial profile indicates high risk factors that may affect loan approval or 
+                            result in higher interest rates. Consider addressing these issues before applying.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Information Cards -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle text-success fa-2x mb-3"></i>
+                            <h6 class="card-title text-success">Low Risk</h6>
+                            <p class="card-text small">
+                                Strong financial profile with stable income, good credit, and low debt-to-income ratio.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x mb-3"></i>
+                            <h6 class="card-title text-warning">Medium Risk</h6>
+                            <p class="card-text small">
+                                Some risk factors present. May need to improve credit or reduce loan amount.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-danger h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-times-circle text-danger fa-2x mb-3"></i>
+                            <h6 class="card-title text-danger">High Risk</h6>
+                            <p class="card-text small">
+                                Multiple risk factors may affect loan approval or result in higher rates.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/risk_analyzer.js') }}"></script>
+{% endblock %}

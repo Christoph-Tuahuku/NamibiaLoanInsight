@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+{% set page_title = "Budget Planner" %}
+{% set active_page = "budget" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-chart-pie me-3"></i>Budget Planner
+                </h1>
+                <p class="lead">Plan your budget and see how much you can afford to borrow</p>
+            </div>
+
+            <!-- Budget Input Form -->
+            <form method="POST" id="budgetForm">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Income Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="monthly_income" class="form-label">Monthly Income (N$)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">N$</span>
+                                        <input type="number" class="form-control" id="monthly_income" name="monthly_income" 
+                                               min="1000" step="100" value="{{ request.form.monthly_income or '' }}" required>
+                                    </div>
+                                    <div class="form-text">Include all sources of income</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dependents" class="form-label">Number of Dependents</label>
+                                    <input type="number" class="form-control" id="dependents" name="dependents" 
+                                           min="0" max="10" value="{{ request.form.dependents or '0' }}">
+                                    <div class="form-text">Children and others you support financially</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-credit-card me-2"></i>Current Debts
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="existing_debt_payments" class="form-label">Monthly Debt Payments (N$)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">N$</span>
+                                        <input type="number" class="form-control" id="existing_debt_payments" 
+                                               name="existing_debt_payments" min="0" step="10" 
+                                               value="{{ request.form.existing_debt_payments or '0' }}">
+                                    </div>
+                                    <div class="form-text">Total of all current loan payments</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="credit_cards" class="form-label">Credit Card Payments (N$)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">N$</span>
+                                        <input type="number" class="form-control" id="credit_cards" 
+                                               name="credit_cards" min="0" step="10" 
+                                               value="{{ request.form.credit_cards or '0' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expense Categories -->
+                <div class="card bg-dark border-primary mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Monthly Expenses
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="housing" class="form-label">Housing (Rent/Bond) (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="housing" name="housing" 
+                                           min="0" step="100" value="{{ request.form.housing or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="transport" class="form-label">Transport (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="transport" name="transport" 
+                                           min="0" step="50" value="{{ request.form.transport or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="food_groceries" class="form-label">Food & Groceries (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="food_groceries" name="food_groceries" 
+                                           min="0" step="50" value="{{ request.form.food_groceries or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="utilities" class="form-label">Utilities (Electricity, Water) (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="utilities" name="utilities" 
+                                           min="0" step="50" value="{{ request.form.utilities or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="medical" class="form-label">Medical/Insurance (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="medical" name="medical" 
+                                           min="0" step="50" value="{{ request.form.medical or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="other_expenses" class="form-label">Other Expenses (N$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">N$</span>
+                                    <input type="number" class="form-control" id="other_expenses" name="other_expenses" 
+                                           min="0" step="50" value="{{ request.form.other_expenses or '' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator me-2"></i>Calculate Affordability
+                    </button>
+                </div>
+            </form>
+
+            <!-- Budget Results -->
+            {% if budget_result %}
+            <div class="card bg-dark border-success">
+                <div class="card-header">
+                    <h5 class="text-success mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Your Financial Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Key Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-dark">N$ {{ "%.2f"|format(budget_result.monthly_income) }}</h4>
+                                <small class="text-muted">Monthly Income</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-dark">N$ {{ "%.2f"|format(budget_result.estimated_expenses) }}</h4>
+                                <small class="text-muted">Total Expenses</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-dark">N$ {{ "%.2f"|format(budget_result.disposable_income) }}</h4>
+                                <small class="text-muted">Disposable Income</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-dark">{{ budget_result.debt_service_ratios.current }}%</h4>
+                                <small class="text-muted">Current Debt Ratio</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Affordability Assessment -->
+                    <div class="alert alert-{{ 'success' if budget_result.disposable_income > 0 else 'warning' }}">
+                        <h6 class="alert-heading">Affordability Assessment</h6>
+                        <p class="mb-0">{{ budget_result.recommendation }}</p>
+                    </div>
+
+                    <!-- Loan Affordability -->
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <h6 class="text-primary mb-3">Safe Borrowing Capacity</h6>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>Safe Additional Payment:</td>
+                                            <td><strong>N$ {{ "%.2f"|format(budget_result.affordable_payments.safe_additional) }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Additional Payment:</td>
+                                            <td>N$ {{ "%.2f"|format(budget_result.affordable_payments.maximum_additional) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-4">
+                            <h6 class="text-primary mb-3">Estimated Loan Amounts</h6>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>12 months @ 16.8%:</td>
+                                            <td>N$ {{ "%.0f"|format(budget_result.loan_estimates['12_months_16.8%']) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>24 months @ 16.8%:</td>
+                                            <td>N$ {{ "%.0f"|format(budget_result.loan_estimates['24_months_16.8%']) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>36 months @ 16.8%:</td>
+                                            <td>N$ {{ "%.0f"|format(budget_result.loan_estimates['36_months_16.8%']) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>60 months @ 16.8%:</td>
+                                            <td>N$ {{ "%.0f"|format(budget_result.loan_estimates['60_months_16.8%']) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Breakdown Chart -->
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">Budget Breakdown</h6>
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+
+                    <!-- Financial Health Tips -->
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">Financial Health Tips</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <div class="alert alert-info alert-sm">
+                                    <i class="fas fa-piggy-bank me-2"></i>
+                                    <strong>Emergency Fund:</strong> Aim to save 3-6 months of expenses
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="alert alert-info alert-sm">
+                                    <i class="fas fa-percentage me-2"></i>
+                                    <strong>Debt Ratio:</strong> Keep total debt below 30% of income
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <div class="alert alert-info alert-sm">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    <strong>Save First:</strong> Pay yourself first with automatic savings
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Information Cards -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-info fa-2x mb-3"></i>
+                            <h6 class="card-title text-info">Safe Borrowing</h6>
+                            <p class="card-text small">
+                                Our calculator uses conservative ratios to ensure you can comfortably afford repayments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-warning h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calculator text-warning fa-2x mb-3"></i>
+                            <h6 class="card-title text-warning">Smart Planning</h6>
+                            <p class="card-text small">
+                                Factor in all expenses and emergency funds before taking on new debt.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-heart text-success fa-2x mb-3"></i>
+                            <h6 class="card-title text-success">Financial Wellness</h6>
+                            <p class="card-text small">
+                                Maintain a healthy balance between needs, wants, and financial security.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if budget_result %}
+    // Budget breakdown chart
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+    
+    const income = {{ budget_result.monthly_income }};
+    const expenses = {{ budget_result.estimated_expenses }};
+    const debts = {{ budget_result.existing_debts }};
+    const disposable = {{ budget_result.disposable_income }};
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Living Expenses', 'Current Debts', 'Available Income'],
+            datasets: [{
+                data: [expenses, debts, Math.max(0, disposable)],
+                backgroundColor: ['#dc3545', '#ffc107', '#198754'],
+                borderColor: ['#b02a37', '#ffca2c', '#157347'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': N$' + context.parsed.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+    
+    // Auto-calculate if using Namibian averages
+    document.getElementById('monthly_income').addEventListener('input', function() {
+        const income = parseFloat(this.value) || 0;
+        if (income > 0) {
+            // Suggest Namibian average percentages
+            const housing = income * 0.35;
+            const transport = income * 0.15;
+            const food = income * 0.20;
+            const utilities = income * 0.10;
+            
+            // Don't overwrite if user has entered values
+            if (!document.getElementById('housing').value) {
+                document.getElementById('housing').placeholder = 'Suggested: N$' + housing.toFixed(0);
+            }
+            if (!document.getElementById('transport').value) {
+                document.getElementById('transport').placeholder = 'Suggested: N$' + transport.toFixed(0);
+            }
+            if (!document.getElementById('food_groceries').value) {
+                document.getElementById('food_groceries').placeholder = 'Suggested: N$' + food.toFixed(0);
+            }
+            if (!document.getElementById('utilities').value) {
+                document.getElementById('utilities').placeholder = 'Suggested: N$' + utilities.toFixed(0);
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

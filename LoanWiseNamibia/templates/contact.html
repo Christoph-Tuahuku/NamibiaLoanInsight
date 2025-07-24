@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Namibia Loan Insight{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h1 class="display-5 text-primary mb-3">
+                    <i class="fas fa-envelope me-3"></i>Contact Us
+                </h1>
+                <p class="lead">
+                    We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                </p>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="card bg-dark border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-paper-plane me-2"></i>Send us a Message
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="contactForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       value="{{ request.form.name if request.form.name else '' }}"
+                                       required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="{{ request.form.email if request.form.email else '' }}"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-select" id="subject" name="subject">
+                                <option value="">Select a subject...</option>
+                                <option value="general" {{ 'selected' if request.form.subject == 'general' else '' }}>
+                                    General Inquiry
+                                </option>
+                                <option value="calculator" {{ 'selected' if request.form.subject == 'calculator' else '' }}>
+                                    Loan Calculator Issue
+                                </option>
+                                <option value="risk_analyzer" {{ 'selected' if request.form.subject == 'risk_analyzer' else '' }}>
+                                    Risk Analyzer Question
+                                </option>
+                                <option value="compliance" {{ 'selected' if request.form.subject == 'compliance' else '' }}>
+                                    Regulatory Compliance
+                                </option>
+                                <option value="partnership" {{ 'selected' if request.form.subject == 'partnership' else '' }}>
+                                    Partnership Opportunity
+                                </option>
+                                <option value="feedback" {{ 'selected' if request.form.subject == 'feedback' else '' }}>
+                                    Feedback & Suggestions
+                                </option>
+                                <option value="technical" {{ 'selected' if request.form.subject == 'technical' else '' }}>
+                                    Technical Support
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" 
+                                      placeholder="Please describe your inquiry in detail..." required>{{ request.form.message if request.form.message else '' }}</textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                            <label class="form-check-label" for="consent">
+                                I consent to having this website store my submitted information for the purpose of responding to my inquiry.
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark border-primary h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-map-marker-alt text-primary fa-2x mb-3"></i>
+                            <h6 class="card-title">Location</h6>
+                            <p class="card-text small">
+                                Serving all of Namibia<br>
+                                Windhoek, Namibia
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark border-primary h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-clock text-primary fa-2x mb-3"></i>
+                            <h6 class="card-title">Response Time</h6>
+                            <p class="card-text small">
+                                We typically respond within<br>
+                                24-48 hours
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark border-primary h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt text-primary fa-2x mb-3"></i>
+                            <h6 class="card-title">Privacy</h6>
+                            <p class="card-text small">
+                                Your information is secure<br>
+                                and will not be shared
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="card bg-dark border-primary mt-5">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion accordion-dark" id="faqAccordion">
+                        <div class="accordion-item bg-dark border-secondary">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button bg-dark text-light collapsed" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#faqCollapse1">
+                                    How accurate are the loan calculations?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse1" class="accordion-collapse collapse" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Our calculations are based on current NamFISA and Bank of Namibia regulations. 
+                                    However, actual loan terms may vary between lenders. Always confirm details 
+                                    with your chosen financial institution.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark border-secondary">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button bg-dark text-light collapsed" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#faqCollapse2">
+                                    Is my personal information safe?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse2" class="accordion-collapse collapse" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, we take privacy seriously. We do not store personal financial information 
+                                    entered into our calculators, and contact form data is only used to respond 
+                                    to your inquiries.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark border-secondary">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button bg-dark text-light collapsed" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#faqCollapse3">
+                                    Do you provide actual loans?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse3" class="accordion-collapse collapse" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    No, we are an educational platform that provides calculation tools and 
+                                    financial information. We do not provide loans or financial services directly. 
+                                    You'll need to apply with licensed financial institutions.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-dark border-secondary">
+                            <h2 class="accordion-header" id="faq4">
+                                <button class="accordion-button bg-dark text-light collapsed" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#faqCollapse4">
+                                    How can financial institutions partner with you?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse4" class="accordion-collapse collapse" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We're planning to introduce a financial institution directory in version 2.0. 
+                                    Licensed lenders interested in partnership opportunities can contact us 
+                                    using the form above with "Partnership Opportunity" as the subject.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-5">
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>Need immediate assistance?
+                    </h6>
+                    <p class="mb-3">
+                        While we respond to messages as quickly as possible, you can also:
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('loan_calculator') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-calculator me-1"></i>Try our Calculator
+                        </a>
+                        <a href="{{ url_for('risk_analyzer') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-chart-line me-1"></i>Use Risk Analyzer
+                        </a>
+                        <a href="{{ url_for('about') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-info-circle me-1"></i>Learn More About Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Simple form validation enhancement
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const consent = document.getElementById('consent').checked;
+    
+    if (!name || !email || !message || !consent) {
+        e.preventDefault();
+        alert('Please fill in all required fields and provide consent.');
+        return false;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        e.preventDefault();
+        alert('Please enter a valid email address.');
+        return false;
+    }
+    
+    return true;
+});
+</script>
+{% endblock %}
